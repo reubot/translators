@@ -24,7 +24,7 @@ function getSearchResults(doc) {
 	var rows = doc.getElementById('search-hits-gnus-search-hits-pane');
 	if (!rows) return false;
 	rows = rows.getElementsByTagName('article');
-//	Zotero.debug(rows);
+	//	Zotero.debug(rows);
 
 	for (var i = 0; i < rows.length; i++) {
 		//		var count = rows[i].getElementsByClassName('count')[0];
@@ -40,7 +40,6 @@ function getSearchResults(doc) {
 		found = true;
 
 		items[hdl.href] = ZU.trimInternal(title.textContent.replace(prefix.textContent, ''));
-
 	}
 
 	return found ? items : false;
@@ -62,7 +61,7 @@ function getItem(doc) {
 		item.url = ZU.xpathText(doc, '//div[@class="actions-bar__urltext"]');
 		//Z.debug
 		//console.log(ZU.xpath(doc,'//script[contains(.,"nbcore_pdf"))]'));
-		var jsontext = (ZU.xpathText(doc ,'//script[contains(.,"nbcore_pdf")]'));//'//script[41]'));
+		var jsontext = (ZU.xpathText(doc, '//script[contains(.,"nbcore_pdf")]'));//'//script[41]'));
 		jsontext = jsontext.replace("<!--//--><![CDATA[//><!--", "");
 		jsontext = jsontext.replace("jQuery.extend(Drupal.settings,", "");
 		jsontext = jsontext.replace(new RegExp('\\);$', 'm'), "");
@@ -80,11 +79,11 @@ function getItem(doc) {
 
 function doWeb(doc, url) {
 	if (detectWeb(doc, url) == "multiple") {
-		var items=getSearchResults(doc);
+		var items = getSearchResults(doc);
 		//	Zotero.debug(items);
 
-		Zotero.selectItems(items, function(items) {
-			if(!items) return true;
+		Zotero.selectItems(items, function (items) {
+			if (!items) return true;
 			var ids = [];
 
 			for (var i in items) {
@@ -92,6 +91,7 @@ function doWeb(doc, url) {
 			}
 			Zotero.debug(ids);
 			ZU.processDocuments(ids, getItem);
+			return false;
 		});
 	}
 	else {
