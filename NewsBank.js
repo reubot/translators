@@ -31,7 +31,7 @@ function getSearchResults(doc) {
 		//		if (!count) count = "";
 		//		else count = count.textContent.replace(/^\s*(\d+)[\s\S]*/, '$1') + '. ';
 
-		//var title = doc.querySelector('.search-hits__hit__title');
+		//		var title = doc.querySelector('.search-hits__hit__title');
 		var title = rows[i].getElementsByClassName('search-hits__hit__title')[0];
 		var hdl = rows[i].getElementsByTagName('a')[0];
 		var prefix = hdl.getElementsByClassName('element-invisible')[0];
@@ -50,28 +50,28 @@ function getRISText(doc) {
 }
 
 function getItem(doc) {
-	//ZU.doGet(getRISLink(doc), function(text) {
+	//	ZU.doGet(getRISLink(doc), function(text) {
 	var text = getRISText(doc);
-	//Z.debug(text);
+	//	Z.debug(text);
 	var trans = Zotero.loadTranslator('import');
 	// RIS
 	trans.setTranslator('32d59d2d-b65a-4da4-b0a3-bdd3cfb979e7');
 	trans.setString(text);
 	trans.setHandler('itemDone', function (obj, item) {
 		item.url = ZU.xpathText(doc, '//div[@class="actions-bar__urltext"]');
-		//Z.debug
-		//console.log(ZU.xpath(doc,'//script[contains(.,"nbcore_pdf"))]'));
+		//		Z.debug
+		//		console.log(ZU.xpath(doc,'//script[contains(.,"nbcore_pdf"))]'));
 		var jsontext = (ZU.xpathText(doc, '//script[contains(.,"nbcore_pdf")]'));//'//script[41]'));
 		jsontext = jsontext.replace("<!--//--><![CDATA[//><!--", "");
 		jsontext = jsontext.replace("jQuery.extend(Drupal.settings,", "");
 		jsontext = jsontext.replace(new RegExp('\\);$', 'm'), "");
 		jsontext = jsontext.replace("//--><!]]>", " ");
-		//Z.debug(jsontext);
+		//		Z.debug(jsontext);
 		var pdfJSON = JSON.parse(jsontext);
-		//Z.debug(pdfJSON);
+		//		Z.debug(pdfJSON);
 		var notebody = pdfJSON.nbcore_pdf['nbcore-pdf-ascii-bar'].template_params.body;
 		item.notes.push({ note: ZU.trim(notebody) });
-		//item.attachments.push()
+		//		item.attachments.push()
 		item.complete();
 	});
 	trans.translate();
