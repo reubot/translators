@@ -1,4 +1,4 @@
-	{
+{
 	"translatorID": "7fc76bfc-3a1a-47e7-93cc-4deed69bee5f",
 	"label": "NewsBank",
 	"creator": "Reuben Peterkin",
@@ -10,11 +10,11 @@
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
 	"lastUpdated": "2021-08-06 07:05:28"
-	}
+}
 
 function detectWeb(doc, url) {
 	if (getRISText(doc)) return "newspaperArticle";
-	if (url.indexOf("results") != -1) return "multiple";
+	if (url.includes("results")) return "multiple";
 	//	Zotero.debug(url.indexOf("results"));
 	return false;
 }
@@ -26,7 +26,7 @@ function getSearchResults(doc) {
 	rows = rows.getElementsByTagName('article');
 //	Zotero.debug(rows);
 
-	for (var i=0; i<rows.length; i++) {
+	for (var i = 0; i < rows.length; i++) {
 		//		var count = rows[i].getElementsByClassName('count')[0];
 		//		if (!count) count = "";
 		//		else count = count.textContent.replace(/^\s*(\d+)[\s\S]*/, '$1') + '. ';
@@ -39,7 +39,7 @@ function getSearchResults(doc) {
 
 		found = true;
 
-		items[hdl.href] = ZU.trimInternal(title.textContent.replace(prefix.textContent,''));
+		items[hdl.href] = ZU.trimInternal(title.textContent.replace(prefix.textContent, ''));
 
 	}
 
@@ -63,17 +63,17 @@ function getItem(doc) {
 		//Z.debug
 		//console.log(ZU.xpath(doc,'//script[contains(.,"nbcore_pdf"))]'));
 		var jsontext = (ZU.xpathText(doc ,'//script[contains(.,"nbcore_pdf")]'));//'//script[41]'));
-	jsontext = jsontext.replace("<!--//--><![CDATA[//><!--", "");
-	jsontext = jsontext.replace("jQuery.extend(Drupal.settings,", "");
-	jsontext = jsontext.replace(new RegExp('\\);$', 'm'), "");
-	jsontext = jsontext.replace("//--><!]]>", " ");
-	//Z.debug(jsontext);
-	var pdfJSON = JSON.parse(jsontext);
-	//Z.debug(pdfJSON);
-	var notebody = pdfJSON.nbcore_pdf['nbcore-pdf-ascii-bar'].template_params.body;
-	item.notes.push({ note: ZU.trim(notebody) });
-	//item.attachments.push()
-	item.complete();
+		jsontext = jsontext.replace("<!--//--><![CDATA[//><!--", "");
+		jsontext = jsontext.replace("jQuery.extend(Drupal.settings,", "");
+		jsontext = jsontext.replace(new RegExp('\\);$', 'm'), "");
+		jsontext = jsontext.replace("//--><!]]>", " ");
+		//Z.debug(jsontext);
+		var pdfJSON = JSON.parse(jsontext);
+		//Z.debug(pdfJSON);
+		var notebody = pdfJSON.nbcore_pdf['nbcore-pdf-ascii-bar'].template_params.body;
+		item.notes.push({ note: ZU.trim(notebody) });
+		//item.attachments.push()
+		item.complete();
 	});
 	trans.translate();
 }
@@ -91,11 +91,10 @@ function doWeb(doc, url) {
 				ids.push(i);
 			}
 			Zotero.debug(ids);
-			ZU.processDocuments(ids,getItem);
+			ZU.processDocuments(ids, getItem);
 		});
 	}
-	else
-	{
+	else {
 		getItem(doc);
 	}
 }
