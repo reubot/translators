@@ -1,4 +1,4 @@
-{
+	{
 	"translatorID": "7fc76bfc-3a1a-47e7-93cc-4deed69bee5f",
 	"label": "NewsBank",
 	"creator": "Reuben Peterkin",
@@ -10,12 +10,12 @@
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
 	"lastUpdated": "2021-08-06 07:05:28"
-}
+	}
 
 function detectWeb(doc, url) {
 	if (getRISText(doc)) return "newspaperArticle";
 	if (url.indexOf("results") != -1) return "multiple";
-//	Zotero.debug(url.indexOf("results"));
+	//	Zotero.debug(url.indexOf("results"));
 	return false;
 }
 
@@ -27,9 +27,9 @@ function getSearchResults(doc) {
 //	Zotero.debug(rows);
 
 	for (var i=0; i<rows.length; i++) {
-//		var count = rows[i].getElementsByClassName('count')[0];
-//		if (!count) count = "";
-//		else count = count.textContent.replace(/^\s*(\d+)[\s\S]*/, '$1') + '. ';
+		//		var count = rows[i].getElementsByClassName('count')[0];
+		//		if (!count) count = "";
+		//		else count = count.textContent.replace(/^\s*(\d+)[\s\S]*/, '$1') + '. ';
 
 		//var title = doc.querySelector('.search-hits__hit__title');
 		var title = rows[i].getElementsByClassName('search-hits__hit__title')[0];
@@ -42,7 +42,6 @@ function getSearchResults(doc) {
 		items[hdl.href] = ZU.trimInternal(title.textContent.replace(prefix.textContent,''));
 
 	}
-//	Zotero.debug(items);
 
 	return found ? items : false;
 }
@@ -80,21 +79,20 @@ function getItem(doc) {
 }
 
 function doWeb(doc, url) {
-
 	if (detectWeb(doc, url) == "multiple") {
-	var items=getSearchResults(doc);
-//	Zotero.debug(items);
+		var items=getSearchResults(doc);
+		//	Zotero.debug(items);
 
-	Zotero.selectItems(items, function(items) {
-		if(!items) return true;
-		var ids = [];
+		Zotero.selectItems(items, function(items) {
+			if(!items) return true;
+			var ids = [];
 
-		for (var i in items) {
-			ids.push(i);
-		}
-		Zotero.debug(ids);
-		ZU.processDocuments(ids,getItem);
-	});
+			for (var i in items) {
+				ids.push(i);
+			}
+			Zotero.debug(ids);
+			ZU.processDocuments(ids,getItem);
+		});
 	}
 	else
 	{
