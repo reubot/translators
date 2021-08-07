@@ -2,7 +2,7 @@
 	"translatorID": "7fc76bfc-3a1a-47e7-93cc-4deed69bee5f",
 	"label": "NewsBank",
 	"creator": "Reuben Peterkin",
-	"target": "https?://infoweb.newsbank.com/apps/news/",
+	"target": "^https?://infoweb\\.newsbank\\.com/apps/news/",
 	"minVersion": "3.0",
 	"maxVersion": "",
 	"priority": 100,
@@ -21,25 +21,18 @@ function detectWeb(doc, url) {
 
 function getSearchResults(doc) {
 	var items = {}, found = false;
-	var rows = doc.getElementById('search-hits-gnus-search-hits-pane');
+	var rows = doc.getElementsByTagName('article');
 	if (!rows) return false;
-	rows = rows.getElementsByTagName('article');
 	//	Zotero.debug(rows);
 
 	for (var i = 0; i < rows.length; i++) {
-		//		var count = rows[i].getElementsByClassName('count')[0];
-		//		if (!count) count = "";
-		//		else count = count.textContent.replace(/^\s*(\d+)[\s\S]*/, '$1') + '. ';
-
-		//		var title = doc.querySelector('.search-hits__hit__title');
 		var title = rows[i].getElementsByClassName('search-hits__hit__title')[0];
-		var hdl = rows[i].getElementsByTagName('a')[0];
-		var prefix = hdl.getElementsByClassName('element-invisible')[0];
-		if (!hdl) continue;
-
+		var link = rows[i].getElementsByTagName('a')[0];
+		var prefix = link.getElementsByClassName('element-invisible')[0];
+		if (!title || !link) continue;
 		found = true;
 
-		items[hdl.href] = ZU.trimInternal(title.textContent.replace(prefix.textContent, ''));
+		items[link.href] = ZU.trimInternal(title.textContent.replace(prefix.textContent, ''));
 	}
 
 	return found ? items : false;
@@ -50,7 +43,6 @@ function getRISText(doc) {
 }
 
 function getItem(doc) {
-	//	ZU.doGet(getRISLink(doc), function(text) {
 	var text = getRISText(doc);
 	//	Z.debug(text);
 	var trans = Zotero.loadTranslator('import');
@@ -69,8 +61,8 @@ function getItem(doc) {
 		//		Z.debug(jsontext);
 		var pdfJSON = JSON.parse(jsontext);
 		//		Z.debug(pdfJSON);
-		var notebody = pdfJSON.nbcore_pdf['nbcore-pdf-ascii-bar'].template_params.body;
-		item.notes.push({ note: ZU.trim(notebody) });
+		var noteBody = pdfJSON.nbcore_pdf['nbcore-pdf-ascii-bar'].template_params.body;
+		item.notes.push({ note: noteBody.trim() });
 		//		item.attachments.push()
 		item.complete();
 	});
