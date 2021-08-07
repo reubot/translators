@@ -62,12 +62,12 @@ function getItem(doc) {
 		var pdfJSON = JSON.parse(jsontext);
 		//		Z.debug(pdfJSON);
 		var noteBody = pdfJSON.nbcore_pdf['nbcore-pdf-ascii-bar'].template_params.body;
-/*
+
 		var docBody = doc.getElementsByClassName('document-view__body');
-		for (var body in docBody) {
-			item.notes.push({ note: body.innerHTML.trim() });
+		for (var i=0; i<docBody.length; i++) {
+			item.notes.push({ note: docBody[i].innerHTML.trim() });
 		}
-*/
+
 //		Zotero.debug(content);
 
 		item.notes.push({ note: noteBody.trim() });
