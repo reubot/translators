@@ -61,7 +61,7 @@ function getItem(doc) {
 		item.url = ZU.xpathText(doc, '//div[@class="actions-bar__urltext"]');
 		//		Z.debug
 		//		console.log(ZU.xpath(doc,'//script[contains(.,"nbcore_pdf"))]'));
-		var jsontext = (ZU.xpathText(doc, '//script[contains(.,"nbcore_pdf")]'));//'//script[41]'));
+		var jsontext = (ZU.xpathText(doc, '//script[contains(.,"nbcore_pdf")]'));
 		jsontext = jsontext.replace("<!--//--><![CDATA[//><!--", "");
 		jsontext = jsontext.replace("jQuery.extend(Drupal.settings,", "");
 		jsontext = jsontext.replace(new RegExp('\\);$', 'm'), "");
