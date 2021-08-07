@@ -36,9 +36,8 @@
 */
 
 function detectWeb(doc, url) {
-	if (getRISText(doc)) return "newspaperArticle";
-	if (url.includes("results")) return "multiple";
-	//	Zotero.debug(url.indexOf("results"));
+	if (getRISElement(doc)) return "newspaperArticle";
+	if (url.includes("/results")) return "multiple";
 	return false;
 }
 
@@ -49,24 +48,26 @@ function getSearchResults(doc) {
 	//	Zotero.debug(rows);
 
 	for (var i = 0; i < rows.length; i++) {
-		var title = rows[i].querySelector('search-hits__hit__title');
+		var title = rows[i].querySelector('.search-hits__hit__title');
 		var link = rows[i].querySelector('a');
-		var prefix = link.querySelector('element-invisible');
+		var prefix = link.querySelector('.element-invisible').textContent;
 		if (!title || !link) continue;
 		found = true;
 
-		items[link.href] = ZU.trimInternal(title.textContent.replace(prefix.textContent, ''));
+		if (!prefix) prefix = '';
+
+		items[link.href] = ZU.trimInternal(title.textContent.replace(prefix, ''));
 	}
 
 	return found ? items : false;
 }
 
-function getRISText(doc) {
-	return doc.getElementById('nbplatform-noodletools-export-risdatabyformpost').textContent.trim();
+function getRISElement(doc) {
+	return doc.getElementById('nbplatform-noodletools-export-risdatabyformpost');
 }
 
 function getItem(doc) {
-	var text = getRISText(doc);
+	var text = getRISElement(doc).textContent.trim();
 	//	Z.debug(text);
 	var trans = Zotero.loadTranslator('import');
 	// RIS
