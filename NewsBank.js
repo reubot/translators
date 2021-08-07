@@ -51,27 +51,12 @@ function getItem(doc) {
 	trans.setString(text);
 	trans.setHandler('itemDone', function (obj, item) {
 		item.url = ZU.xpathText(doc, '//div[@class="actions-bar__urltext"]');
-		//		Z.debug
-		//		console.log(ZU.xpath(doc,'//script[contains(.,"nbcore_pdf"))]'));
-		var jsontext = (ZU.xpathText(doc, '//script[contains(.,"nbcore_pdf")]'));
-		jsontext = jsontext.replace("<!--//--><![CDATA[//><!--", "");
-		jsontext = jsontext.replace("jQuery.extend(Drupal.settings,", "");
-		jsontext = jsontext.replace(new RegExp('\\);$', 'm'), "");
-		jsontext = jsontext.replace("//--><!]]>", " ");
-		//		Z.debug(jsontext);
-		var pdfJSON = JSON.parse(jsontext);
-		//		Z.debug(pdfJSON);
-		var noteBody = pdfJSON.nbcore_pdf['nbcore-pdf-ascii-bar'].template_params.body;
 
 		var docBody = doc.getElementsByClassName('document-view__body');
 		for (var i=0; i<docBody.length; i++) {
 			item.notes.push({ note: docBody[i].innerHTML.trim() });
 		}
 
-//		Zotero.debug(content);
-
-		item.notes.push({ note: noteBody.trim() });
-		//		item.attachments.push()
 		item.complete();
 	});
 	trans.translate();
