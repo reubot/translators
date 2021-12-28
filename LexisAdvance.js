@@ -2,14 +2,14 @@
 	"translatorID": "498974f8-2c85-4cd1-b58a-e5a21ed0c2ad",
 	"label": "LexisAdvance",
 	"creator": "Reuben Peterkin",
-	"target": "^https?://[^/]*lexis-?nexis\\.com|^https?://[^/]*advance\\.lexis\\.com",
+	"target": "^https?://[^/]*lexis-?nexis\\.com|^https?://[^/]*advance.lexis.com",
 	"minVersion": "3.0",
 	"maxVersion": "",
 	"priority": 100,
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gcsv",
-	"lastUpdated": "2021-12-24 14:00:20"
+	"lastUpdated": "2021-12-28 02:36:32"
 }
 
 /*
@@ -50,15 +50,30 @@ function detectWeb(doc, url) {
 		Z.debug(url.indexOf("/document/"));
 		return "document";
 	}
-
+	/* multiple results not currently handled
 	if (url.indexOf("search") != -1 || ((url.indexOf("contentRenderer.do?") != -1 || url.indexOf("target=results_ResultsList") != -1) && ZU.xpath(doc, '//tr[./td/input[@name="frm_tagged_documents"]]/td/a').length > 0)) {
 		return "multiple";
 	}
+	*/
 }
 
 function doWeb(doc, url) {
 	var title = doc.getElementById('SS_DocumentTitle');
-	var item = new Zotero.Item("document");
+	// collections
+	// https://help.lexisnexis.com/Flare/nexisuni/US/en_US/Content/field/collectiontips.htm
+
+	var collection = doc.documentElement.innerHTML.match(/\"activecontenttype\":"(.+?)\"/);
+	Z.debug(collection[1]);
+	var itemtype = "document";
+
+	// https://api.zotero.org/schema
+	// TODO handle other types
+	switch (collection[1]) {
+		case "news":
+			itemtype = "newspaperArticle";
+			break;
+	}
+	var item = new Zotero.Item(itemtype);
  	item.title = title.textContent;
   	item.rights = doc.querySelector('.SS_Copyright').textContent;
 	var SS_LeftAlign = doc.querySelectorAll('.SS_LeftAlign > div');
@@ -109,11 +124,20 @@ function doWeb(doc, url) {
 	}
 */
 
-	var collection = doc.documentElement.innerHTML.match(/\"activecontenttype\":"(.+?)\"/);
-	Z.debug(collection[1]);
 
-	// TODO Add url
+
+	// URL handling
 	// https://help.lexisnexis.com/Flare/nexisuni/US/en_US/Content/topic/gh_urlapisdr.htm
+	// http://advance.lexis.com/api/document/collection/{collection-id}/id/{doc-id}?{page}&{reporter}&{context}
+	var url = 'http://advance.lexis.com/api/document/collection/' + collection[1] + documentid[1].replace("urn:contentItem:","/id/");
+	// http://advance.lexis.com/api/document?collection={collection-id}&id={urn:contentItem:}&(context)
+	//var url = 'http://advance.lexis.com/api/document?collection='{collection-id}'&id='{urn:contentItem:}&(context)
+	item.URL = url;
+	item.attachments.push({
+		title: 'Snapshot',
+		document: doc
+		});
+
 	item.complete();
 
 }
