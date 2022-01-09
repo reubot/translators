@@ -9,14 +9,14 @@
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
-	"lastUpdated": "2021-12-21 04:18:59"
+	"lastUpdated": "2022-01-09 00:53:10"
 }
 
 /*
 	***** BEGIN LICENSE BLOCK *****
 
 	Copyright © 2021 Abe Jellinek and Jim Miazek
-	
+
 	This file is part of Zotero.
 
 	Zotero is free software: you can redistribute it and/or modify
@@ -64,6 +64,9 @@ function detectWeb(doc, url) {
 		// not the greatest fallback... other guesses we could use?
 		return "magazineArticle";
 	}
+	if (url.includes('/retrieve.do')) {
+		return("document");
+	}
 	return false;
 }
 
@@ -108,7 +111,7 @@ function scrape(doc, url) {
 		productName
 	});
 	let risPostBody = "citationFormat=RIS&documentData=" + encodeURIComponent(documentData).replace(/%20/g, "+");
-	
+
 	let pdfURL = attr(doc, 'button[data-gtm-feature="download"]', 'data-url');
 
 	ZU.doPost('/ps/citationtools/rest/cite/download', risPostBody, function (text) {
@@ -124,20 +127,20 @@ function scrape(doc, url) {
 					mimeType: "application/pdf"
 				});
 			}
-			
+
 			if (item.ISSN) {
 				item.ISSN = Zotero.Utilities.cleanISSN(item.ISSN);
 			}
-			
+
 			if (item.pages && item.pages.endsWith("+")) {
 				item.pages = item.pages.replace(/\+/, "-");
 			}
-			
+
 			item.attachments.push({
 				title: "Snapshot",
 				document: doc
 			});
-			
+
 			item.notes = [];
 			item.url = item.url.replace(/u=[^&]+&?/, '');
 			item.complete();
