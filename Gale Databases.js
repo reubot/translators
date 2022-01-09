@@ -9,7 +9,7 @@
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
-	"lastUpdated": "2022-01-09 00:53:10"
+	"lastUpdated": "2022-01-09 10:22:33"
 }
 
 /*
@@ -34,7 +34,6 @@
 
 	***** END LICENSE BLOCK *****
 */
-
 
 function detectWeb(doc, url) {
 	if (url.includes('/ps/eToc.do')
@@ -110,6 +109,13 @@ function scrape(doc, url) {
 		documentUrl,
 		productName
 	});
+	/* alt method
+	let risData = doc.querySelectorAll('.citationToolsRisDownload > input');
+	for (let input of risData) {
+		if (input.getAttribute('name') == 'documentData')
+			documentData = input.getAttribute('value');
+
+	}*/
 	let risPostBody = "citationFormat=RIS&documentData=" + encodeURIComponent(documentData).replace(/%20/g, "+");
 
 	let pdfURL = attr(doc, 'button[data-gtm-feature="download"]', 'data-url');
