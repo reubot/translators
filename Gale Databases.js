@@ -9,7 +9,7 @@
 	"inRepository": true,
 	"translatorType": 4,
 	"browserSupport": "gcsibv",
-	"lastUpdated": "2022-01-09 10:22:33"
+	"lastUpdated": "2022-02-15 12:16:54"
 }
 
 /*
@@ -103,19 +103,24 @@ function scrape(doc, url) {
 	let mcode = citeData.getAttribute('data-mcode');
 	let productName = citeData.getAttribute('data-productname');
 	let docId = mcode ? undefined : citeData.getAttribute('data-docid');
-	let documentData = JSON.stringify({
-		docId,
-		mcode,
-		documentUrl,
-		productName
-	});
-	/* alt method
+	let documentData = null;
+
+	// alt method
 	let risData = doc.querySelectorAll('.citationToolsRisDownload > input');
 	for (let input of risData) {
 		if (input.getAttribute('name') == 'documentData')
 			documentData = input.getAttribute('value');
 
-	}*/
+	}
+	if (documentData == null)
+	{
+		documentData = 	JSON.stringify({
+		docId,
+		mcode,
+		documentUrl,
+		productName
+		});
+	}
 	let risPostBody = "citationFormat=RIS&documentData=" + encodeURIComponent(documentData).replace(/%20/g, "+");
 
 	let pdfURL = attr(doc, 'button[data-gtm-feature="download"]', 'data-url');
